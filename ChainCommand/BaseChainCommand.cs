@@ -1,39 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
-using ChainCommand;
 
 namespace ChainCommand
 {
     public class BaseChainCommand : IChainCommand
     {
-        protected IChainCommand _chainedCommand;
+        protected IChainCommand chainedCommand;
 
-        protected bool Cancellable = false;
+        protected bool cancellable = false;
+
+        protected bool isDone = true;
 
         private List<Action> _onExecuteDone = new List<Action>();
-        
+
+
         public virtual void Execute()
         {
-            done();
+            if (!isDone)
+                throw new Exception("You try to execute a command which is already is executed !!  Do you have Clear() command instance before execute it?");
+            isDone = false;
         }
 
-        
+
         public IChainCommand Chain(IChainCommand cmd)
         {
-            _chainedCommand = cmd;
+            chainedCommand = cmd;
 
             return cmd;
         }
 
         public virtual void Clear()
         {
-            _chainedCommand?.Clear();
+            isDone = true;
+            chainedCommand?.Clear();
             _onExecuteDone.Clear();
         }
 
         public bool IsCancellable()
         {
-            return Cancellable;
+            return cancellable;
+        }
+
+        public bool IsDone()
+        {
+            return isDone;
         }
 
         public void OnExecuteDone(Action callback)
@@ -43,17 +53,18 @@ namespace ChainCommand
 
         protected void done()
         {
-            if (_chainedCommand != null) {
-                //If a executeion done callback exist we listen for chained command end execution
-                if (_onExecuteDone != null) {
-                    _chainedCommand.OnExecuteDone(delegate()
-                    {
-                        invokeOnExecuteDone();
-                    });
-                }
+            if (chainedCommand != null)
+            {
+                //We listen an chained command executin done event to execute our invokeOnExecuteDone method
+                chainedCommand.OnExecuteDone(delegate () {
+                    invokeOnExecuteDone();
+                });
+
                 //Execute chained command 
-                _chainedCommand.Execute();
-            } else {
+                chainedCommand.Execute();
+            }
+            else
+            {
                 //Direct execution done callback invokation
                 invokeOnExecuteDone();
             }
@@ -61,6 +72,7 @@ namespace ChainCommand
 
         private void invokeOnExecuteDone()
         {
+            isDone = true;
             int length = _onExecuteDone.Count;
             for (int i = 0; i < length; i++)
             {

@@ -1,9 +1,5 @@
-﻿using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ChainCommand;
+﻿using System.Timers;
+using NUnit.Framework;
 using ChainCommand.test.fixture;
 using Moq;
 using NFluent;
@@ -18,9 +14,8 @@ namespace ChainCommand.test
         public void TestOnExecuteDone()
         {
             bool myFlag = false;
-            IChainCommand cmd = new BaseChainCommand();
-            cmd.OnExecuteDone(delegate ()
-            {
+            IChainCommand cmd = new BasicChainCommand();
+            cmd.OnExecuteDone(delegate () {
                 myFlag = true;
             });
             cmd.Execute();
@@ -30,15 +25,14 @@ namespace ChainCommand.test
         [Test]
         public void TestChainedExecute()
         {
-            IChainCommand cmd1 = new BaseChainCommand();
+            IChainCommand cmd1 = new BasicChainCommand();
             bool myFlag = false;
-            cmd1.OnExecuteDone(delegate ()
-            {
+            cmd1.OnExecuteDone(delegate () {
                 myFlag = true;
             });
 
-            IChainCommand cmd2 = new BaseChainCommand();
-            Mock<BaseChainCommand> cmd3 = new Mock<BaseChainCommand>() { CallBase = true };
+            IChainCommand cmd2 = new BasicChainCommand();
+            Mock<BasicChainCommand> cmd3 = new Mock<BasicChainCommand>() { CallBase = true };
             cmd1.Chain(cmd2).Chain(cmd3.Object);
 
             cmd1.Execute();
@@ -65,14 +59,12 @@ namespace ChainCommand.test
         {
             bool onCancelFlag = false;
             bool onExecuteFlag = false;
-            CancellableChainCommand cmd = new CancellableChainCommand();
-            cmd.OnCancel(delegate ()
-            {
+            PseudoCancellableChainCommand cmd = new PseudoCancellableChainCommand();
+            cmd.OnCancel(delegate () {
                 onCancelFlag = true;
             });
 
-            cmd.OnExecuteDone(delegate ()
-            {
+            cmd.OnExecuteDone(delegate () {
                 onExecuteFlag = true;
             });
 
@@ -83,6 +75,9 @@ namespace ChainCommand.test
             Check.That(onExecuteFlag).IsFalse();
             Check.That(onCancelFlag).IsFalse();
         }
+
+
+
     }
 
 

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ChainCommand;
 
 namespace ChainCommand
 {
@@ -16,7 +13,7 @@ namespace ChainCommand
 
         public CancellableChainCommand()
         {
-            Cancellable = true;
+            cancellable = true;
         }
 
         public void OnCancel(Action callback)
@@ -26,14 +23,22 @@ namespace ChainCommand
 
         public void Cancel()
         {
-            if (!Cancellable)
+            if (!cancellable)
                 throw new Exception("You try to cancel a command which is not cancelable !!");
 
-            if (_chainedCommand != null && _chainedCommand.IsCancellable()) {
-                ICancellableChainCommand cancellableChainCmd = _chainedCommand as ICancellableChainCommand;
+            if (!isDone)
+                throw new Exception("You try to cancel a command which is currently executing itself !! You have to wait command ending before cancell it !");
+
+            isDone = false;
+
+            if (chainedCommand != null && chainedCommand.IsCancellable())
+            {
+                ICancellableChainCommand cancellableChainCmd = chainedCommand as ICancellableChainCommand;
                 cancellableChainCmd.OnCancel(DoCancel);
                 cancellableChainCmd.Cancel();
-            } else {
+            }
+            else
+            {
                 DoCancel();
             }
         }
@@ -57,6 +62,7 @@ namespace ChainCommand
 
         private void invokeOnCancelDone()
         {
+            isDone = true;
             int length = _onCancelDone.Count;
             for (int i = 0; i < length; i++)
             {

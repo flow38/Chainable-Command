@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-
 namespace ChainCommand
 {
     public interface IChainCommand
@@ -14,7 +9,7 @@ namespace ChainCommand
         void Execute();
 
         void OnExecuteDone(Action callback);
-        
+
         /// <summary>
         /// Chain command execution/cancellation to another IChainCommand
         /// </summary>
@@ -28,6 +23,8 @@ namespace ChainCommand
         /// </summary>
         void Clear();
 
-        Boolean IsCancellable();
+        bool IsCancellable();
+
+        bool IsDone();
     }
 }

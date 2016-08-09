@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace ChainCommand.test.fixture
 {
     class PseudoCancellableChainCommand : CancellableChainCommand
@@ -14,8 +10,10 @@ namespace ChainCommand.test.fixture
 
         public override void Execute()
         {
-            Counter++;
+
             base.Execute();
+            Counter++;
+            done();
         }
 
         protected override void DoCancel()
