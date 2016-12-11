@@ -1,7 +1,7 @@
 # Chainable-Command#
 A command pattern implementation where commands can be chained to create "macro" command.
 
-## IChainCommand API
+## API
 ```
 
     public interface IChainCommand
@@ -26,11 +26,6 @@ A command pattern implementation where commands can be chained to create "macro"
         /// Feet perfectly in a pool pattern context....
         /// </summary>
         void Clear();
-
-        /// <summary>
-        /// Prepare instance for garbage collection
-        /// </summary>
-        void Destroy();
 
         bool IsCancellable();
 
@@ -83,5 +78,14 @@ public class CustomCommandB : BaseChainCommand
         
     }
 ```
+## Chained Commands
+```
+IChainCommand cmdA = new CustomCommandA();
+IChainCommand cmdB = new CustomCommandB();
+IChainCommand cmdC = new CustomCommandC();
+cmdA.Chain(cmdA).Chain(cmdB).chain(cmdC);
+cmdA.OnExecuteDone(yourAllCommandDoneCallBack);
+cmdA.Execute();
 
+```
 ...to continue
