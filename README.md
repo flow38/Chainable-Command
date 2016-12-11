@@ -1,18 +1,18 @@
 # Chainable-Command#
 A command pattern implementation where commands can be chained to create "macro" command.
 
-## API
+## IChainCommand API
 ```
-
+using System;
+namespace ChainCommand
+{
     public interface IChainCommand
     {
         /// <summary>
         /// Execute command
         /// </summary>
         void Execute();
-
-        void OnExecuteDone(Action callback);
-
+        
         /// <summary>
         /// Chain command execution/cancellation to another IChainCommand
         /// </summary>
@@ -21,15 +21,47 @@ A command pattern implementation where commands can be chained to create "macro"
         IChainCommand Chain(IChainCommand cmd);
 
         /// <summary>
-        /// Clean internal command stuff in order to do a new Execute call
+        /// Register a callback for execution done "event"
         /// 
-        /// Feet perfectly in a pool pattern context....
+        /// Note 1 : You can register as many callback as you want.
+        /// Note 2 : Registers callbacks will only be invoke when chained command (if exist ) is done.
+        /// </summary>
+        /// <param name="callback"></param>
+        void OnExecuteDone(Action callback);
+
+        /// <summary>
+        /// Clean internal command stuff in order to do a new Execute call : 
+        /// - Clear chained command if exist one
+        /// - Set isDone flag to true
+        /// - Remove all callbacks registered via OnExecuteDone API.
+        ///  
+        /// Note : could perfectly fit in a pool pattern context
         /// </summary>
         void Clear();
 
         bool IsCancellable();
 
         bool IsDone();
+    }
+}
+```
+## ICancellableChainCommand API
+```
+ interface ICancellableChainCommand : IChainCommand
+    {
+        /// <summary>
+        /// Cancel command execution 
+        /// </summary>
+        void Cancel();
+
+        /// <summary>
+        /// Register a callback for cancellation done "event"
+        /// 
+        /// You can register as many callback as you want.
+        /// Registers callbacks will only be invoke when chained command (if exist ) cancellation is done.
+        /// </summary>
+        /// <param name="callback"></param>
+        void OnCancel(Action callback);
     }
 ```
 ## Basic Command
@@ -78,6 +110,29 @@ public class CustomCommandB : BaseChainCommand
         
     }
 ```
+## Cancellable Command
+```
+public class PseudoCancellableChainCommand : CancellableChainCommand
+    {
+        public int Counter
+        {
+            get; set;
+        } = 0;
+
+        public override void Execute()
+        {
+            base.Execute();
+            Counter++;
+            done();
+        }
+
+        protected override void DoCancel()
+        {
+            Counter--;
+            base.DoCancel();
+        }
+    }
+```
 ## Chained Commands
 ```
 IChainCommand cmdA = new CustomCommandA();
@@ -88,4 +143,14 @@ cmdA.OnExecuteDone(yourAllCommandDoneCallBack);
 cmdA.Execute();
 
 ```
-...to continue
+
+## Cancel Commands
+```
+ICancellableChainCommand cmdA = new CustomCommandA();
+ICancellableChainCommand cmdB = new CustomCommandB();
+ICancellableChainCommand cmdC = new CustomCommandC();
+cmdA.Chain(cmdA).Chain(cmdB).chain(cmdC);
+cmdA.OnCancel(yourAllCommandCancelledCallBack);
+cmdA.Cancel();
+
+```
