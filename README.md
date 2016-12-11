@@ -2,7 +2,8 @@
 A command pattern implementation where commands can be chained to create "macro" command.
 
 ## IChainCommand API
-`public interface IChainCommand
+```
+public interface IChainCommand
     {
         /// <summary>
         /// Execute command
