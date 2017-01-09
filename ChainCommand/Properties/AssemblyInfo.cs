@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("BaseChainCommand")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A command pattern implementation where commands can be chained to create macro command.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("BaseChainCommand")]
-[assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
+[assembly: AssemblyCompany("Florent Falcy")]
+[assembly: AssemblyProduct("ChainCommand")]
+[assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

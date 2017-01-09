@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <licenseUrl>https://github.com/flow38/Chainable-Command</licenseUrl>
+    <projectUrl>https://github.com/flow38/Chainable-Command</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>Nuget package creation</releaseNotes>
+    <copyright>Copyright 2017</copyright>
+    <tags>unity3D command</tags>
+  </metadata>
+</package>
