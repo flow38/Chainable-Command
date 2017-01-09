@@ -2,7 +2,7 @@
 
 namespace ChainCommand
 {
-    interface ICancellableChainCommand : IChainCommand
+    public interface ICancellableChainCommand : IChainCommand
     {
         /// <summary>
         /// Cancel command execution 
