@@ -29,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\ChainCommand.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Moq, Version=4.2.1510.2205, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
@@ -81,7 +82,21 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="bin\Release\ChainCommand.dll" />
+    <Content Include="bin\Release\ChainCommand.pdb" />
+    <Content Include="bin\Release\Moq.dll" />
+    <Content Include="bin\Release\Moq.xml" />
+    <Content Include="bin\Release\NFluent.dll" />
+    <Content Include="bin\Release\NFluent.xml" />
+    <Content Include="bin\Release\nunit.framework.dll" />
+    <Content Include="bin\Release\nunit.framework.xml" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

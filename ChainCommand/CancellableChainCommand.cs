@@ -44,9 +44,8 @@ namespace ChainCommand
         }
 
         /// <summary>
-        ///     Do all your stuff to revert back to pre execute() state
-        ///     Developper must override this method to do all cancellation stuff and
-        ///     Override implementation should always end by a call to base.DoCancel() (or chained cancellation feature will be
+        ///     Implementate in concrete classes all cancellation actions.
+        ///     Beware : concrete classes implementations MUST always end by a call to base.DoCancel() (or chained cancellation feature will be
         ///     broken)
         /// </summary>
         protected virtual void DoCancel()
