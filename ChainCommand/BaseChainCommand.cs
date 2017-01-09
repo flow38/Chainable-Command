@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ChainCommand
 {
-    public class BaseChainCommand : IChainCommand
+    public abstract class BaseChainCommand : IChainCommand
     {
         protected IChainCommand chainedCommand;
 
@@ -13,7 +13,13 @@ namespace ChainCommand
 
         private List<Action> _onExecuteDone = new List<Action>();
 
+        protected IChainCommand _previousCommand;
 
+        /// <summary>
+        /// Concrete class implementations must always call base implementation at first line
+        /// in order to mark instance as currently processing (isDone flag) or  benefit of below
+        /// isDone value checking. 
+        /// </summary>
         public virtual void Execute()
         {
             if (!isDone)
@@ -21,18 +27,33 @@ namespace ChainCommand
             isDone = false;
         }
 
-
+        /// <summary>
+        /// Recursive chaining
+        /// </summary>
+        /// <param name="cmd"></param>
+        /// <returns></returns>
         public IChainCommand Chain(IChainCommand cmd)
         {
-            chainedCommand = cmd;
+            if (chainedCommand == null)
+            {
+                chainedCommand = cmd;
+                (cmd as BaseChainCommand)._previousCommand = this;
+            }
+            else
+            {
+                chainedCommand.Chain(cmd);
+            }
 
             return cmd;
         }
-
+        /// <summary>
+        /// Prepare instance for GC collection
+        /// </summary>
         public virtual void Clear()
         {
             isDone = true;
             chainedCommand?.Clear();
+            _previousCommand = null;
             _onExecuteDone.Clear();
         }
 
@@ -46,11 +67,28 @@ namespace ChainCommand
             return isDone;
         }
 
+        public IChainCommand PreviousCommand()
+        {
+            return _previousCommand;
+        }
+
+        public IChainCommand NextCommand()
+        {
+            return chainedCommand;
+        }
+
         public void OnExecuteDone(Action callback)
         {
             _onExecuteDone.Add(callback);
         }
 
+        /// <summary>
+        /// Concrete classes must call this method to trigger chained class execution
+        /// and/or end execution callback invokation.
+        /// 
+        /// If concrete classes override this method, they MUST call at the end of their implementation 
+        /// base.done().
+        /// </summary>
         protected void done()
         {
             if (chainedCommand != null)

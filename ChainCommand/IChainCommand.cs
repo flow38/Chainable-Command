@@ -37,5 +37,8 @@ namespace ChainCommand
         bool IsCancellable();
 
         bool IsDone();
+
+        IChainCommand PreviousCommand();
+        IChainCommand NextCommand();
     }
 }
