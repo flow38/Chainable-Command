@@ -9,7 +9,7 @@ namespace ChainCommand
 
         protected bool cancellable = false;
 
-        protected bool isDone = true;
+        protected bool isDone = false;
 
         private List<Action> _onExecuteDone = new List<Action>();
 
@@ -22,9 +22,8 @@ namespace ChainCommand
         /// </summary>
         public virtual void Execute()
         {
-            if (!isDone)
+            if(isDone)
                 throw new Exception("You try to execute a command which is already is executed !!  Do you have Clear() command instance before execute it?");
-            isDone = false;
         }
 
         /// <summary>
@@ -34,7 +33,7 @@ namespace ChainCommand
         /// <returns></returns>
         public IChainCommand Chain(IChainCommand cmd)
         {
-            if (chainedCommand == null)
+            if(chainedCommand == null)
             {
                 chainedCommand = cmd;
                 (cmd as BaseChainCommand)._previousCommand = this;
@@ -51,7 +50,7 @@ namespace ChainCommand
         /// </summary>
         public virtual void Clear()
         {
-            isDone = true;
+            isDone = false;
             chainedCommand?.Clear();
             _previousCommand = null;
             _onExecuteDone.Clear();
@@ -77,9 +76,22 @@ namespace ChainCommand
             return chainedCommand;
         }
 
+        public IChainCommand LastCommand()
+        {
+            if(chainedCommand == null)
+                return this;
+            else
+                return chainedCommand.LastCommand();
+        }
+
         public void OnExecuteDone(Action callback)
         {
             _onExecuteDone.Add(callback);
+        }
+
+        public void FlagAsDone()
+        {
+            isDone = true;
         }
 
         /// <summary>
@@ -91,8 +103,10 @@ namespace ChainCommand
         /// </summary>
         protected void done()
         {
-            if (chainedCommand != null)
+            isDone = true;
+            if(chainedCommand != null && !chainedCommand.IsDone())
             {
+
                 //We listen an chained command executin done event to execute our invokeOnExecuteDone method
                 chainedCommand.OnExecuteDone(delegate () {
                     invokeOnExecuteDone();
@@ -110,9 +124,8 @@ namespace ChainCommand
 
         private void invokeOnExecuteDone()
         {
-            isDone = true;
             int length = _onExecuteDone.Count;
-            for (int i = 0; i < length; i++)
+            for(int i = 0; i < length; i++)
             {
                 _onExecuteDone[i].Invoke();
             }
