@@ -7,7 +7,7 @@ namespace ChainCommand
         /// Execute command
         /// </summary>
         void Execute();
-        
+
         /// <summary>
         /// Chain command execution/cancellation to another IChainCommand
         /// </summary>
@@ -40,5 +40,8 @@ namespace ChainCommand
 
         IChainCommand PreviousCommand();
         IChainCommand NextCommand();
+        IChainCommand LastCommand();
+
+        void FlagAsDone();
     }
 }
