@@ -6,7 +6,7 @@ namespace ChainCommand
     /// <summary>
     /// Base class for cancellable command implementation
     /// </summary>
-    public class CancellableChainCommand : BaseChainCommand, ICancellableChainCommand
+    public abstract class CancellableChainCommand : BaseChainCommand, ICancellableChainCommand
     {
 
         private List<Action> _onCancelDone = new List<Action>();
@@ -23,15 +23,15 @@ namespace ChainCommand
 
         public void Cancel()
         {
-            if (!cancellable)
+            if(!cancellable)
                 throw new Exception("You try to cancel a command which is not cancelable !!");
 
-            if (!isDone)
+            if(!isDone)
                 throw new Exception("You try to cancel a command which is currently executing itself !! You have to wait command ending before cancell it !");
 
-            isDone = false;
 
-            if (chainedCommand != null && chainedCommand.IsCancellable())
+
+            if(chainedCommand != null && chainedCommand.IsCancellable())
             {
                 ICancellableChainCommand cancellableChainCmd = chainedCommand as ICancellableChainCommand;
                 cancellableChainCmd.OnCancel(DoCancel);
@@ -50,6 +50,7 @@ namespace ChainCommand
         /// </summary>
         protected virtual void DoCancel()
         {
+            isDone = false;
             invokeOnCancelDone();
         }
 
@@ -61,9 +62,8 @@ namespace ChainCommand
 
         private void invokeOnCancelDone()
         {
-            isDone = true;
             int length = _onCancelDone.Count;
-            for (int i = 0; i < length; i++)
+            for(int i = 0; i < length; i++)
             {
                 _onCancelDone[i].Invoke();
             }
