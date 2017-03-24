@@ -45,6 +45,16 @@ namespace ChainCommand
 
             return cmd;
         }
+
+        public void UnChain()
+        {
+            if(chainedCommand != null)
+            {
+                (chainedCommand as BaseChainCommand)._previousCommand = null;
+                chainedCommand = null;
+            }
+        }
+
         /// <summary>
         /// Prepare instance for GC collection
         /// </summary>
@@ -108,9 +118,7 @@ namespace ChainCommand
             {
 
                 //We listen an chained command executin done event to execute our invokeOnExecuteDone method
-                chainedCommand.OnExecuteDone(delegate () {
-                    invokeOnExecuteDone();
-                });
+                chainedCommand.OnExecuteDone(invokeOnExecuteDone);
 
                 //Execute chained command 
                 chainedCommand.Execute();

@@ -16,6 +16,12 @@ namespace ChainCommand
         IChainCommand Chain(IChainCommand cmd);
 
         /// <summary>
+        /// Break link with NextCommand (which return now NULL)
+        /// </summary>
+        /// <param name="cmd"></param>
+        void UnChain();
+
+        /// <summary>
         /// Register a callback for execution done "event"
         /// 
         /// - You can register as many callback as you want.
