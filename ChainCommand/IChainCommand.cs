@@ -42,12 +42,18 @@ namespace ChainCommand
 
         bool IsCancellable();
 
-        bool IsDone();
+        bool HasBeenExecuted();
+        void FlagAsExecuted();
+
+        /// <summary>
+        /// Do an "execute" operation is currently running ?
+        /// </summary>
+        /// <returns></returns>
+        bool IsInProgress();
 
         IChainCommand PreviousCommand();
         IChainCommand NextCommand();
         IChainCommand LastCommand();
 
-        void FlagAsDone();
     }
 }

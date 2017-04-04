@@ -26,8 +26,8 @@ namespace ChainCommand
             if(!cancellable)
                 throw new Exception("You try to cancel a command which is not cancelable !!");
 
-            if(!isDone)
-                throw new Exception("You try to cancel a command which is currently executing itself !! You have to wait command ending before cancell it !");
+            if(!hasBeenExecuted)
+                throw new Exception("You try to cancel a command which is has not been executed executing itself !! You have to wait command ending before cancell it !");
 
 
 
@@ -50,7 +50,7 @@ namespace ChainCommand
         /// </summary>
         protected virtual void DoCancel()
         {
-            isDone = false;
+            hasBeenExecuted = false;
             invokeOnCancelDone();
         }
 

@@ -9,7 +9,9 @@ namespace ChainCommand
 
         protected bool cancellable = false;
 
-        protected bool isDone = false;
+        protected bool hasBeenExecuted = false;
+
+        protected bool inProgress = false;
 
         private List<Action> _onExecuteDone = new List<Action>();
 
@@ -22,8 +24,11 @@ namespace ChainCommand
         /// </summary>
         public virtual void Execute()
         {
-            if(isDone)
-                throw new Exception("You try to execute a command which is already is executed !!  Do you have Clear() command instance before execute it?");
+            if(hasBeenExecuted)
+                throw new Exception("You try to execute a command which is already have been executed !!  Do you have Clear() command instance before execute it?");
+            if(inProgress)
+                throw new Exception("You try to execute a command which is currently in progress !! ");
+            inProgress = true;
         }
 
         /// <summary>
@@ -60,7 +65,8 @@ namespace ChainCommand
         /// </summary>
         public virtual void Clear()
         {
-            isDone = false;
+            hasBeenExecuted = false;
+            inProgress = false;
             chainedCommand?.Clear();
             _previousCommand = null;
             _onExecuteDone.Clear();
@@ -71,9 +77,19 @@ namespace ChainCommand
             return cancellable;
         }
 
-        public bool IsDone()
+        public bool HasBeenExecuted()
         {
-            return isDone;
+            return hasBeenExecuted;
+        }
+
+        public void FlagAsExecuted()
+        {
+            hasBeenExecuted = true;
+        }
+
+        public bool IsInProgress()
+        {
+            return inProgress;
         }
 
         public IChainCommand PreviousCommand()
@@ -99,10 +115,6 @@ namespace ChainCommand
             _onExecuteDone.Add(callback);
         }
 
-        public void FlagAsDone()
-        {
-            isDone = true;
-        }
 
         /// <summary>
         /// Concrete classes must call this method to trigger chained class execution
@@ -113,8 +125,9 @@ namespace ChainCommand
         /// </summary>
         protected void done()
         {
-            isDone = true;
-            if(chainedCommand != null && !chainedCommand.IsDone())
+            hasBeenExecuted = true;
+            inProgress = false;
+            if(chainedCommand != null && !chainedCommand.HasBeenExecuted())
             {
 
                 //We listen an chained command executin done event to execute our invokeOnExecuteDone method
