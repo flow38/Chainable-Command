@@ -15,7 +15,14 @@ namespace ChainCommand
 
         private List<Action> _onExecuteDone = new List<Action>();
 
-        protected IChainCommand _previousCommand;
+        private IChainCommand _previousCommand;
+
+        public IChainCommand PreviousCommand
+        {
+            get { return _previousCommand; }
+            set { _previousCommand = value; }
+        }
+
 
         /// <summary>
         /// Concrete class implementations must always call base implementation at first line
@@ -41,7 +48,7 @@ namespace ChainCommand
             if(chainedCommand == null)
             {
                 chainedCommand = cmd;
-                (cmd as BaseChainCommand)._previousCommand = this;
+                cmd.PreviousCommand = this;
             }
             else
             {
@@ -91,12 +98,7 @@ namespace ChainCommand
         {
             return inProgress;
         }
-
-        public IChainCommand PreviousCommand()
-        {
-            return _previousCommand;
-        }
-
+        
         public IChainCommand NextCommand()
         {
             return chainedCommand;
@@ -129,7 +131,6 @@ namespace ChainCommand
             inProgress = false;
             if(chainedCommand != null && !chainedCommand.HasBeenExecuted())
             {
-
                 //We listen an chained command executin done event to execute our invokeOnExecuteDone method
                 chainedCommand.OnExecuteDone(invokeOnExecuteDone);
 
@@ -151,5 +152,6 @@ namespace ChainCommand
                 _onExecuteDone[i].Invoke();
             }
         }
+
     }
 }

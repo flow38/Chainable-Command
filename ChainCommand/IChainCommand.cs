@@ -51,7 +51,7 @@ namespace ChainCommand
         /// <returns></returns>
         bool IsInProgress();
 
-        IChainCommand PreviousCommand();
+        IChainCommand PreviousCommand { get; set; }
         IChainCommand NextCommand();
         IChainCommand LastCommand();
 
