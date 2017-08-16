@@ -9,7 +9,7 @@ namespace ChainCommand
     public abstract class CancellableChainCommand : BaseChainCommand, ICancellableChainCommand
     {
 
-        private List<Action> _onCancelDone = new List<Action>();
+        protected List<Action> _onCancelDone = new List<Action>();
 
         public CancellableChainCommand()
         {

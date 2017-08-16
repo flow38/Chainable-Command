@@ -13,7 +13,7 @@ namespace ChainCommand
 
         protected bool inProgress = false;
 
-        private List<Action> _onExecuteDone = new List<Action>();
+        protected List<Action> _onExecuteDone = new List<Action>();
 
         private IChainCommand _previousCommand;
 
@@ -112,7 +112,7 @@ namespace ChainCommand
                 return chainedCommand.LastCommand();
         }
 
-        public void OnExecuteDone(Action callback)
+        public virtual void OnExecuteDone(Action callback)
         {
             _onExecuteDone.Add(callback);
         }
@@ -125,7 +125,7 @@ namespace ChainCommand
         /// If concrete classes override this method, they MUST call at the end of their implementation 
         /// base.done().
         /// </summary>
-        protected void done()
+        protected virtual void done()
         {
             hasBeenExecuted = true;
             inProgress = false;
