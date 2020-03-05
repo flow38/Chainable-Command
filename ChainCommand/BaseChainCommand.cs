@@ -129,7 +129,7 @@ namespace ChainCommand
         {
             hasBeenExecuted = true;
             inProgress = false;
-            if(chainedCommand != null && !chainedCommand.HasBeenExecuted())
+            if(chainedCommand != null && !chainedCommand.HasBeenExecuted() && !chainedCommand.IsInProgress())
             {
                 //We listen an chained command executin done event to execute our invokeOnExecuteDone method
                 chainedCommand.OnExecuteDone(invokeOnExecuteDone);
